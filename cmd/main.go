@@ -2,7 +2,7 @@ package main
 
 import ( 
 	"html/template"  
-    "io" 
+	"io" 
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/echo/v4"
 )
@@ -21,18 +21,14 @@ func newTemplate() *Templates {
 	}
 }
 
-type Count struct {
-	Count int
-}
-
 type Contact struct {
-	Name string
+	Name  string
 	Email string
 }
 
 func newContact(name, email string) *Contact {
 	return &Contact{
-		Name: name,
+		Name:  name,
 		Email: email,
 	}
 }
@@ -51,6 +47,7 @@ func newData() *Data {
 		},
 	}
 }
+
 func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
@@ -60,13 +57,14 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.Render(200, "index", data)
 	})
-	
+
 	e.POST("/contacts", func(c echo.Context) error {
 		name := c.FormValue("name")
 		email := c.FormValue("email")
-
-		data.Contacts = append(data.Contacts, *newContact(name, email))
-		return c.Render(200, "display", data)
+		newContact := *newContact(name, email)
+		data.Contacts = append(data.Contacts, newContact)
+		return c.Render(200, "newentry", newContact)
 	})
+
 	e.Logger.Fatal(e.Start(":42069"))
 }
